@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UsernameSchema } from '@/app/lib/validators';
+import useFetch from '@/hooks/use-fetch';
+import { updateUsername } from '@/actions/users';
+import { BarLoader } from 'react-spinners';
 
 const Dashboard = () => {
 
@@ -23,7 +26,11 @@ const Dashboard = () => {
         setValue("username", user?.username)
     }, [isLoaded])
 
-    const onSubmit = async (data) => { };
+    const { loading, error, fn: fnUpdateUsername } = useFetch(updateUsername)
+
+    const onSubmit = async (data) => {
+        fnUpdateUsername(data.username)
+    };
 
     return (
         <div className='space-y-8'>
@@ -44,11 +51,19 @@ const Dashboard = () => {
 
                                 <Input {...register("username")} placeholder="Username" />
                             </div>
+                            {/* for Form */}
                             {errors.username &&
                                 <p className='text-red-500 text-sm mt-1'>
                                     {errors.username.message}
                                 </p>}
+                            {/* for API */}
+                            {error && (
+                                <p className='text-red-500 text-sm mt-1'>
+                                    {error?.message}
+                                </p>
+                            )}
                         </div>
+                        {loading && (<BarLoader className='mb-3' width={"100%"} color='#36d7b7' />)}
                         <Button type="submit">Update Username</Button>
                     </form>
                 </CardContent>
