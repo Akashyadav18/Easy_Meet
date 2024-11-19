@@ -16,7 +16,7 @@ const isProtectedRoute = createRouteMatcher([
 
 // Use Clerk middleware
 export default clerkMiddleware(async (auth, req) => {
-    console.log("Middleware executed for:", req.nextUrl.pathname);
+    // console.log("Middleware executed for:", req.nextUrl.pathname);
 
     // Protect the route and redirect to sign-in if unauthorized
     if (isProtectedRoute(req)) {
