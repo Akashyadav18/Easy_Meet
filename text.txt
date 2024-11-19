@@ -1,0 +1,4 @@
+install Prisma -> npm i -D prisma
+To initialize Prisma inside project -> npx prisma init
+To generate a prisma Tables and provide it to Neon -> npx prisma generate
+To push changes to Neon DB -> npx prisma migrate dev
