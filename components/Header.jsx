@@ -17,13 +17,17 @@ const Header = async () => {
                 {/* <Image src="" width="150" height="60" className='h-16 w-auto'/> */}
                 <p>Logo</p>
             </Link>
-            <div className='flex gap-8'>
-                <Link href={"/events?create=true"}>
-                    <Button className="flex gap-2 items-center"> <PenBox size={18} /> Create Event</Button>
+            
+            <div className="flex items-center gap-4">
+                <Link href="/events?create=true">
+                    <Button variant="default" className="flex items-center gap-2">
+                        <PenBox size={18} />
+                        <span className="hidden sm:inline">Create Event</span>
+                    </Button>
                 </Link>
                 <SignedOut>
                     <SignInButton forceRedirectUrl="/dashboard">
-                        <Button>Login</Button>
+                        <Button variant="outline">Login</Button>
                     </SignInButton>
                 </SignedOut>
                 <SignedIn>

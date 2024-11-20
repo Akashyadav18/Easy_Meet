@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import "./globals.css";
 import { Inter } from 'next/font/google'
 import { ClerkProvider } from "@clerk/nextjs";
+import CreateEventDrawer from "@/components/create-event";
 
 export const metadata = {
   title: "Create Next App",
@@ -26,6 +27,8 @@ export default function RootLayout({ children }) {
               <p>Footer</p>
             </div>
           </footer>
+
+          <CreateEventDrawer />
 
         </body>
       </html>
