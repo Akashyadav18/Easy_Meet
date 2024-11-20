@@ -1,3 +1,5 @@
+"use client"
+
 import { eventSchema } from '@/app/lib/validators'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React from 'react'
@@ -5,8 +7,13 @@ import { Controller, useForm } from 'react-hook-form'
 import { Input } from './ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { Button } from './ui/button'
+import useFetch from '@/hooks/use-fetch'
+import { createEvent } from '@/actions/events'
+import { useRouter } from 'next/navigation'
 
-const EventForm = () => {
+const EventForm = ({onSubmitForm}) => {
+
+    const router = useRouter();
 
     const { register, control, handleSubmit, formState: { errors }, } = useForm({
         resolver: zodResolver(eventSchema),
@@ -16,8 +23,16 @@ const EventForm = () => {
         }
     })
 
+    const {loading, error, fn: fnCreateEvent} = useFetch(createEvent)
+
+    const onSubmit = async (data) => {
+        await fnCreateEvent(data);
+        if(!loading && !error) onSubmitForm();
+        router.refresh();
+    }
+
     return (
-        <form className='px-5 flex flex-col gap-4'>
+        <form className='px-5 flex flex-col gap-4' onSubmit={handleSubmit(onSubmit)}>
             {/* Title */}
             <div >
                 <label htmlFor='title' className='block text-sm font-medium text-gray-600'>
@@ -49,7 +64,7 @@ const EventForm = () => {
                     <p className='text-red-500 text-sm mt-1'>{errors.duration.message}</p>
                 )}
             </div>
-            {/* isPrivate */}
+            {/* isPrivate */}   
 
             <div>
                 <label
@@ -81,7 +96,11 @@ const EventForm = () => {
                 )}
             </div>
 
-            <Button type="submit">Submit</Button>
+            {error && <p className='text-red-500 text-sm mt-1'>{error.message}</p>}
+
+            <Button type="submit" disabled={loading}>
+                {loading ? "Submitting..." : "Create Event"}
+            </Button>
 
         </form>
     )
