@@ -30,48 +30,60 @@ export async function createEvent(data) {
 
     return event;
 
-    // try {
-    //     // Use currentUser() instead of auth()
-    //     const user = await currentUser();
+}
 
-    //     if (!user) {
-    //         throw new Error("Unauthorized - No user found");
-    //     }
+export async function getUserEvents() {
+    const { userId } = await auth();
+    if (!userId) {
+        throw new Error("Unauthorized");
+    }
 
-    //     console.log("Clerk User ID:", user.id);
+    const user = await db.user.findUnique({
+        where: { clerkUserId: userId },
+    });
 
-    //     const validatedData = eventSchema.parse(data);
+    if (!user) {
+        throw new Error("User not found");
+    }
 
-    //     // First find or create the user in your database
-    //     // const dbUser = await db.user.upsert({
-    //     //     where: {
-    //     //         clerkUserId: user.id
-    //     //     },
-    //     //     update: {},
-    //     //     create: {
-    //     //         clerkUserId: user.id,
-    //     //         email: user.emailAddresses[0]?.emailAddress,
-    //     //         name: `${user.firstName} ${user.lastName}`
-    //     //     }
-    //     // });
-    //     const user = await db.user.findUnique({
-    //             where: { clerkUserId: userId },
-    //         });
-        
+    const events = await db.event.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" },
+        include: {
+            _count: {
+                select: { bookings: true },
+            },
+        },
+    });
 
-    //     console.log("Database User:", dbUser);
+    return { events, username: user.username };
+}
 
-    //     // Now create the event with the confirmed database user ID
-    //     const event = await db.event.create({
-    //         data: {
-    //             ...validatedData,
-    //             userId: dbUser.id,
-    //         },
-    //     });
+export async function deleteEvent(eventId) {
+    const { userId } = await auth();
+    if (!userId) {
+        throw new Error("Unauthorized");
+    }
 
-    //     return event;
-    // } catch (error) {
-    //     console.error("Create Event Error:", error);
-    //     throw new Error(error.message || "Failed to create event");
-    // }
+    const user = await db.user.findUnique({
+        where: { clerkUserId: userId },
+    });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    const event = await db.event.findUnique({
+        where: { id: eventId },
+    });
+
+    if (!event || event.userId !== user.id) {
+        throw new Error("Event not found or Unauthorized!");
+    }
+
+    await db.event.delete({
+        where: { id: eventId },
+    })
+
+    return { success: true };
 }
