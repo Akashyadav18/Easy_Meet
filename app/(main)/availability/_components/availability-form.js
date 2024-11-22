@@ -8,6 +8,8 @@ import { Controller, useForm } from "react-hook-form"
 import { timeSlots } from "../data"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import useFetch from "@/hooks/use-fetch"
+import { updateAvailability } from "@/actions/availability"
 
 const AvailabilityForm = ({ initialData }) => {
 
@@ -16,8 +18,14 @@ const AvailabilityForm = ({ initialData }) => {
         defaultValues: { ...initialData },
     })
 
+    const {fn: fnUpdateAvailability, loading, error} = useFetch(updateAvailability);
+
+    const onSubmit = async (data) => {
+        await fnUpdateAvailability(data);
+    };
+
     return (
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
             {[
                 "monday",
                 "tuesday",
@@ -27,9 +35,7 @@ const AvailabilityForm = ({ initialData }) => {
                 "saturday",
                 "sunday",
             ].map((day) => {
-
                 const isAvailable = watch(`${day}.isAvailable`);
-
                 return (
                     <div key={day} className="flex items-center space-x-4 mb-4">
                         <Controller name={`${day}.isAvailable`} control={control}
