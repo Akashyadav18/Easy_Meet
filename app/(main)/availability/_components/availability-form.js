@@ -121,8 +121,8 @@ const AvailabilityForm = ({ initialData }) => {
                     <span className="text-red-500 text-sm">{errors.timeGap.message}</span>
                 )}
             </div>
-
-            <Button type="submit" className="mt-8">Update Availability</Button>
+            {error && <div className="text-red-500 text-sm">{error?.message}</div>}
+            <Button type="submit" className="mt-8" disabled={loading}>{loading ? "Updating..." : "Update Availability"}</Button>
 
         </form>
     )
