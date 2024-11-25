@@ -4,6 +4,20 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { notFound } from 'next/navigation';
 import React from 'react'
 
+// MetaData
+// export async function generateMetadata({params}){
+//     const user = await getUserByUsername(params.username);
+//     if (!user) {
+//         return {
+//             title: "User not found",
+//         }
+//     }
+//     return {
+//         title:`${user.name}'s Profile | EasyMeet`,
+//         description: `Book an event with ${user.name}. View available public event and schedules.`
+//     }
+// }
+
 const UserPage = async ({ params }) => {
 
     const user = await getUserByUsername(params.username);
