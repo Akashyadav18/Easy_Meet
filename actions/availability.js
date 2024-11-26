@@ -112,3 +112,4 @@ export async function updateAvailability(data) {
     }
     return {success: true};
 }
+
