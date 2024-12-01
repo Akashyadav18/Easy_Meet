@@ -2,3 +2,5 @@ install Prisma -> npm i -D prisma
 To initialize Prisma inside project -> npx prisma init
 To generate a prisma Tables and provide it to Neon -> npx prisma generate
 To push changes to Neon DB -> npx prisma migrate dev
+
+To display that calender from  Backend to UI -> npm i react-day-picker

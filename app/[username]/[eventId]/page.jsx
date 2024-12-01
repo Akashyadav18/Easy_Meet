@@ -1,7 +1,7 @@
 // app/[username]/[eventId]/page.jsx
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getEventDetails } from "@/actions/events";
+import { getEventAvailability, getEventDetails } from "@/actions/events";
 import EventDetails from "./_components/EventDetails";
 import BookingForm from "./_components/BookingForm";
 
@@ -23,6 +23,9 @@ export async function generateMetadata({ params }) {
 
 export default async function EventBookingPage({ params }) {
     const event = await getEventDetails(params.username, params.eventId);
+    const availability = await getEventAvailability(params.eventId);
+    console.log(availability);
+
 
     if (!event) {
         notFound();
@@ -32,7 +35,7 @@ export default async function EventBookingPage({ params }) {
         <div className="flex flex-col justify-center lg:flex-row px-4 py-8">
             <EventDetails event={event} />
             <Suspense fallback={<div>Loading booking form...</div>}>
-                <BookingForm  />
+                <BookingForm event={event} availability={availability} />
             </Suspense>
         </div>
     );
